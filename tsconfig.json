@@ -16,7 +16,7 @@
     },
 
     "include": [
-        "/web/src/**/*.ts",
+        "web/src/**/*.ts",
         "web/src/**/*.d.ts",
         "web/src/**/*.vue",
         "vite.config.ts"

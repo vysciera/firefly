@@ -60,7 +60,7 @@ func (s *Server) handleHome(w http.ResponseWriter, r *http.Request) {
 
 func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	_, _ = w.Write([]byte(`{"status":"ok"}`)) // Utter nonsense.
+	_, _ = w.Write([]byte(`{"status":"ok"}`)) // Still nonsense.
 }
 
 func (s *Server) handlePing(w http.ResponseWriter, r *http.Request) {
