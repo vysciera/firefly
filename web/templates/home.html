@@ -1,0 +1,35 @@
+<!doctype html>
+
+<html lang="en">
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>firefly</title>
+
+        <link rel="stylesheet" href="/static/firefly.css">
+
+        <script type="module" src="/static/firefly.js"></script>
+    </head>
+
+    <body>
+        <main>
+            <header>
+                <strong>firefly</strong>
+                <span>experimental flowerpress interface</span>
+            </header>
+            <hr>
+
+            <section>
+                <p>Go rendered this document.</p>
+                <button hx-get="/_ui/ping" hx-target="#htmx-status" hx-swap="innerHTML">text htmx</button>
+
+                <span id="htmx-status">waiting</span>
+            </section>
+            <hr>
+
+            <section>
+                <p>vue island:</p>
+                <div data-vue="counter"></div>
+            </section>
+        </main>
+    </body>
+</html>
