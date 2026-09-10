@@ -6,7 +6,8 @@
   "scripts": {
     "build": "vite build",
     "watch": "vite build --watch",
-    "check": "vue-tsc --noEmit"
+    "check": "vue-tsc --noEmit",
+    "check:ts7": "tsc --noEmit"
   },
 
   "dependencies": {
@@ -16,8 +17,9 @@
 
   "devDependencies": {
     "@types/bun": "latest",
+    "@typescript/native": "npm:typescript@^7.0.2",
     "@vitejs/plugin-vue": "^6.0.8",
-    "typescript": "^7.0.2",
+    "typescript": "npm:@typescript/typescript6@^6.0.2",
     "vite": "^8.3.0",
     "vue-tsc": "^3.3.11"
   }

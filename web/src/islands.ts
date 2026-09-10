@@ -1,4 +1,5 @@
 import { createApp } from "vue"
+
 import Counter from "./islands/Counter.vue"
 
 const islands = {
@@ -7,9 +8,18 @@ const islands = {
 
 type IslandName = keyof typeof islands
 
-export function mountIslands(root: ParentNode = document) {
-    const elements = Array.from(
-        root.querySelectorAll<HTMLElement>("[data-vue]")
+export function mountIslands(root: ParentNode = document): void {
+    const elements: HTMLElement[] = []
+
+    if (
+        root instanceof HTMLElement &&
+        root.matches("[data-vue]")
+    ) {
+        elements.push(root)
+    }
+
+    elements.push(
+        ...root.querySelectorAll<HTMLElement>("[data-vue]"),
     )
 
     for (const element of elements) {
@@ -17,15 +27,21 @@ export function mountIslands(root: ParentNode = document) {
             continue
         }
 
-        const name = element.dataset.vue as IslandName
+        const name = element.dataset.vue as IslandName | undefined
+
+        if (!name) {
+            continue
+        }
+
         const component = islands[name]
 
         if (!component) {
-            console.warn(`unknown Vue island: ${name}`)
+            console.warn(`firefly: unknown Vue island "${name}"`)
             continue
         }
 
         createApp(component).mount(element)
+
         element.dataset.vueMounted = "true"
     }
 }

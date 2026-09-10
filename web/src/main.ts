@@ -8,17 +8,16 @@ function boot() {
 }
 
 if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", boot)
+    document.addEventListener("DOMContentLoaded", boot, { once: true })
 } else {
     boot()
 }
 
 document.addEventListener("htmx:after:swap", (event) => {
-    const customEvent = event as CustomEvent
-    const target =
-        customEvent.detail?.target instanceof Element
-            ? customEvent.detail.target
-            : document
+    const detail = (event as CustomEvent).detail
+    const target = detail?.ctx?.target
 
-    mountIslands(target)
+    if (target instanceof HTMLElement) {
+        mountIslands(target)
+    }
 })
