@@ -5,7 +5,6 @@ import "./firefly.css"
 import { mountIslands } from "./islands"
 
 function boot(): void {
-    console.log("firefly: boot")
     mountIslands()
 }
 

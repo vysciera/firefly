@@ -35,7 +35,9 @@ func (s *Server) routes() {
 		"GET /static/",
 		http.StripPrefix(
 			"/static/",
-			http.FileServer(http.Dir("web/dist")),
+			noCache(
+				http.FileServer(http.Dir("web/dist")),
+			),
 		),
 	)
 
@@ -68,4 +70,11 @@ func (s *Server) handlePing(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write([]byte(
 		`<span class="status">htmx is alive</span>`,
 	))
+}
+
+func noCache(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "no-store")
+		next.ServeHTTP(w, r)
+	})
 }

@@ -7,6 +7,10 @@ export default defineConfig({
         vue(),
     ],
 
+    define: {
+        "process.env.NODE_ENV": JSON.stringify("production"),
+    },
+
     build: {
         outDir: "web/dist",
         emptyOutDir: true,

@@ -2,17 +2,46 @@ import { createApp } from "vue"
 
 import Counter from "./islands/Counter.vue"
 
-export function mountIslands(): void {
-    const element =
-        document.querySelector<HTMLElement>('[data-vue="counter"]')
+const islands = {
+    counter: Counter,
+}
 
-    console.log("firefly: island element", element)
+type IslandName = keyof typeof islands
 
-    if (!element) {
-        return
+export function mountIslands(root: ParentNode = document): void {
+    const elements: HTMLElement[] = []
+
+    if (
+        root instanceof HTMLElement &&
+        root.matches("[data-vue]")
+    ) {
+        elements.push(root)
     }
 
-    createApp(Counter).mount(element)
+    elements.push(
+        ...root.querySelectorAll<HTMLElement>("[data-vue]"),
+    )
 
-    console.log("firefly: counter mounted")
+    for (const element of elements) {
+        if (element.dataset.vueMounted === "true") {
+            continue
+        }
+
+        const name = element.dataset.vue as IslandName | undefined
+
+        if (!name) {
+            continue
+        }
+
+        const component = islands[name]
+
+        if (!component) {
+            console.warn(`firefly: unknown Vue island "${name}"`)
+            continue
+        }
+
+        createApp(component).mount(element)
+
+        element.dataset.vueMounted = "true"
+    }
 }
