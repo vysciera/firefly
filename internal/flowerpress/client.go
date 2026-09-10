@@ -10,8 +10,8 @@ import (
 )
 
 type Client struct {
-	baseURL	string
-	http	*http.Client
+	baseURL string
+	http    *http.Client
 }
 
 type Health struct {
@@ -30,7 +30,7 @@ func NewClient(baseURL string) *Client {
 func (c *Client) Health(ctx context.Context) (*Health, error) {
 	req, err := http.NewRequestWithContext(
 		ctx, http.MethodGet,
-		c.baseURL + "/health",
+		c.baseURL+"/health",
 		nil,
 	)
 	if err != nil {

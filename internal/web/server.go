@@ -8,9 +8,13 @@ import (
 )
 
 type Server struct {
-	mux			*http.ServeMux
-	templates	*template.Template
+	mux         *http.ServeMux
+	templates   *template.Template
 	flowerpress *flowerpress.Client
+}
+
+type homePageData struct {
+	User *flowerpress.User
 }
 
 func NewServer(flowerpressClient *flowerpress.Client) (*Server, error) {
@@ -20,8 +24,8 @@ func NewServer(flowerpressClient *flowerpress.Client) (*Server, error) {
 	}
 
 	s := &Server{
-		mux:		http.NewServeMux(),
-		templates:	templates,
+		mux:         http.NewServeMux(),
+		templates:   templates,
 		flowerpress: flowerpressClient,
 	}
 
@@ -49,6 +53,10 @@ func (s *Server) routes() {
 	s.mux.HandleFunc("GET /_ui/ping", s.handlePing)
 	s.mux.HandleFunc("GET /_ui/flowerpress-health", s.handleFlowerpressHealth)
 	s.mux.HandleFunc("GET /", s.handleHome)
+
+	s.mux.HandleFunc("GET /login", s.handleLoginPage)
+	s.mux.HandleFunc("POST /login", s.handleLogin)
+	s.mux.HandleFunc("POST /logout", s.handleLogout)
 }
 
 func (s *Server) handleHome(w http.ResponseWriter, r *http.Request) {
@@ -57,7 +65,19 @@ func (s *Server) handleHome(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := s.templates.ExecuteTemplate(w, "home.html", nil); err != nil {
+	data := homePageData{}
+	session := sessionFromRequest(r)
+
+	if session != "" {
+		user, cookies, err := s.flowerpress.Me(r.Context(), session)
+
+		relayCookies(w, cookies)
+		if err == nil {
+			data.User = user
+		}
+	}
+
+	if err := s.templates.ExecuteTemplate(w, "home.html", data); err != nil {
 		http.Error(
 			w, "failed to render page",
 			http.StatusInternalServerError,
@@ -80,7 +100,7 @@ func (s *Server) handlePing(w http.ResponseWriter, r *http.Request) {
 func (s *Server) handleFlowerpressHealth(w http.ResponseWriter, r *http.Request) {
 	health, err := s.flowerpress.Health(r.Context())
 
-	w.Header().Set("Content-Type", "text/html; charset=utf8")
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if err != nil {
 		w.WriteHeader(http.StatusBadGateway)
 
@@ -100,7 +120,7 @@ func (s *Server) handleFlowerpressHealth(w http.ResponseWriter, r *http.Request)
 	}
 
 	_, _ = w.Write([]byte(
-		`<span class="status">flowerpress unhealth</span>`,
+		`<span class="status">flowerpress unhealthy</span>`,
 	))
 }
 

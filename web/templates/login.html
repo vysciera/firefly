@@ -1,0 +1,54 @@
+<!doctype html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>login — firefly</title>
+
+        <link rel="stylesheet" href="/static/firefly.css">
+    </head>
+
+    <body>
+        <main>
+            <header>
+                <strong>firefly</strong>
+                <span>authentication</span>
+            </header>
+
+            <hr>
+
+            <form action="/login" method="post">
+                <p>
+                    <label>
+                        username<br>
+                        <input name="username" autocomplete="username" required>
+                    </label>
+                </p>
+
+                <p>
+                    <label>
+                        password<br>
+                        <input
+                            type="password"
+                            name="password"
+                            autocomplete="current-password"
+                            required
+                        >
+                    </label>
+                </p>
+
+                {{if .Error}}
+                    <p class="error">
+                        {{.Error}}
+                    </p>
+                {{end}}
+
+                <button type="submit">
+                    login
+                </button>
+            </form>
+        </main>
+    </body>
+</html>
