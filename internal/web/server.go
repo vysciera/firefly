@@ -3,14 +3,17 @@ package web
 import (
 	"html/template"
 	"net/http"
+
+	"firefly/internal/flowerpress"
 )
 
 type Server struct {
 	mux			*http.ServeMux
 	templates	*template.Template
+	flowerpress *flowerpress.Client
 }
 
-func NewServer() (*Server, error) {
+func NewServer(flowerpressClient *flowerpress.Client) (*Server, error) {
 	templates, err := template.ParseGlob("web/templates/*.html")
 	if err != nil {
 		return nil, err
@@ -19,6 +22,7 @@ func NewServer() (*Server, error) {
 	s := &Server{
 		mux:		http.NewServeMux(),
 		templates:	templates,
+		flowerpress: flowerpressClient,
 	}
 
 	s.routes()
@@ -43,6 +47,7 @@ func (s *Server) routes() {
 
 	s.mux.HandleFunc("GET /health", s.handleHealth)
 	s.mux.HandleFunc("GET /_ui/ping", s.handlePing)
+	s.mux.HandleFunc("GET /_ui/flowerpress-health", s.handleFlowerpressHealth)
 	s.mux.HandleFunc("GET /", s.handleHome)
 }
 
@@ -69,6 +74,33 @@ func (s *Server) handlePing(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	_, _ = w.Write([]byte(
 		`<span class="status">htmx is alive</span>`,
+	))
+}
+
+func (s *Server) handleFlowerpressHealth(w http.ResponseWriter, r *http.Request) {
+	health, err := s.flowerpress.Health(r.Context())
+
+	w.Header().Set("Content-Type", "text/html; charset=utf8")
+	if err != nil {
+		w.WriteHeader(http.StatusBadGateway)
+
+		_, _ = w.Write([]byte(
+			`<span class="status">flowerpress unavailable</span>`,
+		))
+
+		return
+	}
+
+	if health.Status == "ok" {
+		_, _ = w.Write([]byte(
+			`<span class="status">flowerpress online</span>`,
+		))
+
+		return
+	}
+
+	_, _ = w.Write([]byte(
+		`<span class="status">flowerpress unhealth</span>`,
 	))
 }
 

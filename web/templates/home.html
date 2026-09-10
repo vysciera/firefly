@@ -19,6 +19,15 @@
             <hr>
 
             <section>
+                <p>flowerpress connection:</p>
+                <button hx-get="/_ui/flowerpress-health" hx-target="#flowerpress-status" hx-swap="innerHTML">check flowerpress</button>
+
+                <span id="flowerpress-status">
+                    unknown
+                </span>
+            </section>
+
+            <section>
                 <p>Go rendered this document.</p>
                 <button hx-get="/_ui/ping" hx-target="#htmx-status" hx-swap="innerHTML">text htmx</button>
 
