@@ -1,0 +1,52 @@
+:root {
+    color-scheme:   dark;
+
+    font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        monospace;
+
+    background: #111;
+    color:  #ddd;
+}
+
+body {
+    margin: 0;
+}
+
+main {
+    width: min(760px, calc(100% - 48px));
+    margin: 48px auto;
+}
+
+header {
+    display:    flex;
+    justify-content:    space-between;
+}
+
+hr {
+    border: 0;
+    border-top: 1px dotted #555;
+    margin: 24px 0;
+}
+
+button {
+    font:   inherit;
+    color:  inherit;
+    background: transparent;
+    border: 1px solid #666;
+    padding:    6px 10px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #ddd;
+    color:  #111;
+}
+
+.status {
+    margin-left:    12px;
+}
