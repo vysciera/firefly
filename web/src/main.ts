@@ -4,13 +4,17 @@ import "./firefly.css"
 
 import { mountIslands } from "./islands"
 
-console.log("firefly: bundle loaded")
+function boot(): void {
+    console.log("firefly: boot")
+    mountIslands()
+}
 
-document.addEventListener(
-    "DOMContentLoaded",
-    () => {
-        console.log("firefly: DOM ready")
-        mountIslands()
-    },
-    { once: true },
-)
+if (document.readyState === "loading") {
+    document.addEventListener(
+        "DOMContentLoaded",
+        boot,
+        { once: true },
+    )
+} else {
+    boot()
+}
