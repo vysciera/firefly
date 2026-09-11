@@ -106,7 +106,7 @@ func (c *Client) Me(ctx context.Context, session string) (*User, []*http.Cookie,
 	if res.StatusCode != http.StatusOK {
 		return nil, res.Cookies(), fmt.Errorf(
 			"flowerpress me returned %s",
-			err,
+			res.Status,
 		)
 	}
 
